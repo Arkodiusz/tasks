@@ -26,7 +26,7 @@ goto end
 
 :fail
 echo.
-echo There were erors
+echo There were errors in RUNCRUD.BAT file
 
 :end
 echo.
