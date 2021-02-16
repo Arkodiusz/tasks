@@ -1,6 +1,8 @@
 package com.crud.tasks.trello.client;
 
+import com.crud.tasks.domain.CreatedTrelloCard;
 import com.crud.tasks.domain.TrelloBoardDto;
+import com.crud.tasks.domain.TrelloCardDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -29,7 +31,7 @@ import java.util.Optional;
         private String trelloUsername;
 
         public List<TrelloBoardDto> getTrelloBoards() {
-            URI url = buildUri();
+            URI url = buildUriGetTrelloBoardsUri();
 
             TrelloBoardDto[] boardsResponse = restTemplate.getForObject(url, TrelloBoardDto[].class);
 
@@ -38,11 +40,33 @@ import java.util.Optional;
                     .orElse(Collections.emptyList());
         }
 
-        private URI buildUri() {
+        public CreatedTrelloCard createNewCard(TrelloCardDto trelloCardDto) {
+            URI url = buildUriCreateNewCard(trelloCardDto);
+
+            return restTemplate.postForObject(url, null, CreatedTrelloCard.class);
+        }
+
+        private URI buildUriGetTrelloBoardsUri() {
             URI url = UriComponentsBuilder.fromHttpUrl(trelloApiEndpoint + "/members/" + trelloUsername + "/boards")
                     .queryParam("key", trelloAppKey)
                     .queryParam("token", trelloToken)
                     .queryParam("fields", "name,id")
+                    .queryParam("lists", "all")
+                    .build()
+                    .encode()
+                    .toUri();
+            System.out.println(url);
+            return url;
+        }
+
+        private URI buildUriCreateNewCard(TrelloCardDto trelloCardDto) {
+            URI url = UriComponentsBuilder.fromHttpUrl(trelloApiEndpoint + "/cards")
+                    .queryParam("key", trelloAppKey)
+                    .queryParam("token", trelloToken)
+                    .queryParam("idList", trelloCardDto.getListId())
+                    .queryParam("name", trelloCardDto.getName())
+                    .queryParam("desc", trelloCardDto.getDescription())
+                    .queryParam("pos", trelloCardDto.getPos())
                     .build()
                     .encode()
                     .toUri();
