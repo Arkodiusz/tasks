@@ -28,6 +28,10 @@ dependencies {
 	testAnnotationProcessor 'org.projectlombok:lombok:1.18.16'
 
 	//providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+
+	// https://mvnrepository.com/artifact/org.postgresql/postgresql
+	//implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.19'
+
 }
 
 test {
